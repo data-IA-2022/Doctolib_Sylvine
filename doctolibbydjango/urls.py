@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from application.views import accueil
+from application.views import accueil, visMedData
 from authentification.views import connexion, deconnexion, inscription
 
 urlpatterns = [
@@ -25,4 +25,5 @@ urlpatterns = [
     path("",connexion, name ="connexion"),
     path("deconnexion/",deconnexion, name="deconnexion"),
     path("inscription/",inscription, name="inscription"),
+    path("visMedData/",visMedData, name="visMedData"),
 ]

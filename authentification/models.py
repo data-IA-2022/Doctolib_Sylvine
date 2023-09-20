@@ -7,5 +7,5 @@ class Utilisateur(AbstractUser):
 
 # à la main:
 # class Connexion(models.Model):
-#     username = models.CharField(max=50)
-#     motDePasse = models.CharField(max=50)
+#     username = models.CharField(max_length=50)
+#     motDePasse = models.CharField(max_length=50)
