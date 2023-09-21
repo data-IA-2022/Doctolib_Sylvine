@@ -5,7 +5,7 @@ from authentification.models import Utilisateur
 import random 
 import string
 
-# Create your views here.
+
 def connexion(request):
     message = ""
     if request.method == "POST": # a-t-on reçu des data d'un formulaire ?

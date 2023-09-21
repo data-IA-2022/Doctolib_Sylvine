@@ -16,14 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from application.views import accueil, visMedData
+from application.views import accueil, visMedData, comptes, edaia, associationMedecinPatient
 from authentification.views import connexion, deconnexion, inscription
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accueil/",accueil, name = "accueil"), # le name est un alias pour retrouevr toutes les url via un chemin absolu
     path("",connexion, name ="connexion"),
+    path("comptes", comptes, name="comptes"),
     path("deconnexion/",deconnexion, name="deconnexion"),
     path("inscription/",inscription, name="inscription"),
     path("visMedData/",visMedData, name="visMedData"),
+    path("edaia/",edaia, name="edaia"),
+    path("associationMedecinPatient/", associationMedecinPatient, name="associationMedecinPatient"),
 ]

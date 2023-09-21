@@ -10,40 +10,40 @@ class medData(models.Model):
     anonymousID = models.CharField(max_length=50) # trouver moyen pour remplir auto avec l'ID avec la table correspondance avec username
     date = models.DateField(auto_now=True) 
     poids = models.DecimalField(max_digits=6, decimal_places=2)
-    freqCard = models.IntegerField
-    systMatin = models.IntegerField
-    systSoir = models.IntegerField
-    diastMatin = models.IntegerField
-    diastSoir = models.IntegerField
-    symptCardio = models.CharField(max_length=100)
-    nbMed = models.IntegerField
-    oubliMatinYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    oubliSoirYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n")  #
-    effetSecYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    symptomesYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    effetSympt = models.CharField(max_length=100)
-    alcoolYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    grignoSucreYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    grignoSaleYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    nbRepas = models.IntegerField
+    freqCard = models.IntegerField()
+    systMatin = models.IntegerField()
+    systSoir = models.IntegerField()
+    diastMatin = models.IntegerField()
+    diastSoir = models.IntegerField()
+    symptCardio = models.CharField(max_length=100, null=True)
+    nbMed = models.IntegerField()
+    oubliMatinYN = models.BooleanField(default=False) #
+    oubliSoirYN = models.BooleanField(default=False)  #
+    effetSecYN = models.BooleanField(default=False) #
+    symptomesYN = models.BooleanField(default=False) #
+    effetSympt = models.CharField(max_length=100,null=True)
+    alcoolYN = models.BooleanField(default=False) #
+    grignoSucreYN = models.BooleanField(default=False) #
+    grignoSaleYN = models.BooleanField(default=False) #
+    nbRepas = models.IntegerField()
     qqteEau = models.DecimalField(max_digits=6, decimal_places=2)
     qqteAlcool = models.DecimalField(max_digits=6, decimal_places=2)
-    actPhysYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    actPhys = models.CharField(max_length=100)
-    dureeActPhys = models.IntegerField
-    dyspneeYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    oedemeYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    infectionYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    fievreYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    palpitationYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    douleurThoYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    malaiseYN = models.CharField(max_length=3, choices=YesNoChoices, default  = "n") #
-    debutPalp = models.DateField
-    durationPalp = models.DurationField
-    debutDouleurTho = models.DateField
-    durationDouleurTho = models.DurationField
-    debutMalaise = models.DateField
-    durationMalaise = models.DurationField
+    actPhysYN = models.BooleanField(default=False) #
+    actPhys = models.CharField(max_length=100,null=True)
+    dureeActPhys = models.IntegerField(null=True)
+    dyspneeYN = models.BooleanField(default=False) #
+    oedemeYN = models.BooleanField(default=False) #
+    infectionYN = models.BooleanField(default=False) #
+    fievreYN = models.BooleanField(default=False) #
+    palpitationYN = models.BooleanField(default=False) #
+    douleurThoYN = models.BooleanField(default=False) #
+    malaiseYN = models.BooleanField(default=False) #
+    debutPalp = models.TimeField(null=True)
+    durationPalp = models.DurationField(null=True)
+    debutDouleurTho = models.TimeField(null=True)
+    durationDouleurTho = models.DurationField(null=True)
+    debutMalaise = models.TimeField(null=True)
+    durationMalaise = models.DurationField(null=True)
 
     stressChoices = (
         (0, "0"),
