@@ -8,20 +8,21 @@ class medData(models.Model):
     ]
  
     anonymousID = models.CharField(max_length=50) # trouver moyen pour remplir auto avec l'ID avec la table correspondance avec username
-    date = models.DateField(auto_now=True) 
-    poids = models.DecimalField(max_digits=6, decimal_places=2)
+    date = models.DateField() 
+    poids = models.DecimalField(max_digits=6, decimal_places=2, null=True)
+    tourTaille = models.DecimalField(max_digits=6, decimal_places=2)
     freqCard = models.IntegerField()
     systMatin = models.IntegerField()
     systSoir = models.IntegerField()
     diastMatin = models.IntegerField()
     diastSoir = models.IntegerField()
-    symptCardio = models.CharField(max_length=100, null=True)
+    symptCardio = models.CharField(max_length=100, null=True, blank=True)
     nbMed = models.IntegerField()
     oubliMatinYN = models.BooleanField(default=False) #
     oubliSoirYN = models.BooleanField(default=False)  #
     effetSecYN = models.BooleanField(default=False) #
     symptomesYN = models.BooleanField(default=False) #
-    effetSympt = models.CharField(max_length=100,null=True)
+    effetSympt = models.CharField(max_length=100,null=True, blank=True)
     alcoolYN = models.BooleanField(default=False) #
     grignoSucreYN = models.BooleanField(default=False) #
     grignoSaleYN = models.BooleanField(default=False) #
@@ -29,8 +30,8 @@ class medData(models.Model):
     qqteEau = models.DecimalField(max_digits=6, decimal_places=2)
     qqteAlcool = models.DecimalField(max_digits=6, decimal_places=2)
     actPhysYN = models.BooleanField(default=False) #
-    actPhys = models.CharField(max_length=100,null=True)
-    dureeActPhys = models.IntegerField(null=True)
+    actPhys = models.CharField(max_length=100,null=True, blank=True)
+    dureeActPhys = models.IntegerField(null=True, blank=True)
     dyspneeYN = models.BooleanField(default=False) #
     oedemeYN = models.BooleanField(default=False) #
     infectionYN = models.BooleanField(default=False) #
@@ -38,12 +39,12 @@ class medData(models.Model):
     palpitationYN = models.BooleanField(default=False) #
     douleurThoYN = models.BooleanField(default=False) #
     malaiseYN = models.BooleanField(default=False) #
-    debutPalp = models.TimeField(null=True)
-    durationPalp = models.DurationField(null=True)
-    debutDouleurTho = models.TimeField(null=True)
-    durationDouleurTho = models.DurationField(null=True)
-    debutMalaise = models.TimeField(null=True)
-    durationMalaise = models.DurationField(null=True)
+    debutPalp = models.TimeField(null=True, blank=True)
+    durationPalp = models.IntegerField(null=True, blank=True)
+    debutDouleurTho = models.TimeField(null=True, blank=True)
+    durationDouleurTho = models.IntegerField(null=True, blank=True)
+    debutMalaise = models.TimeField(null=True, blank=True)
+    durationMalaise = models.IntegerField(null=True, blank=True)
 
     stressChoices = (
         (0, "0"),

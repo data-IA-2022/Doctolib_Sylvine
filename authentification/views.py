@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from authentification.models import Utilisateur
 import random 
 import string
+import pandas as pd
 
 
 def connexion(request):
@@ -37,3 +38,25 @@ def inscription(request):
 
     return render(request,
                     "inscription.html", {"ideeMDP" : ideeMDP.replace(" ", "")}) # ici, c'est s'il n'y a pas de requete post, ie on vient d'arriver sur la page pour la première fois
+
+
+def alimentationPatients():
+    listePatients = pd.read_csv("/home/sylvine/Documents/Projets/Projet10_Doctolib/Doctolib_Sylvine/authentification/data/listePatients.csv",
+                                )
+    for index, valeurs in listePatients.iterrows():
+        Utilisateur.objects.create(username = valeurs.username,
+                                   password = valeurs.motDePasse,
+                                   role = "patient")
+        
+def alimentationMedecins():
+    listeMedecins = pd.read_csv("/home/sylvine/Documents/Projets/Projet10_Doctolib/Doctolib_Sylvine/authentification/data/listeMedecins.csv",
+                                )
+    for index, valeurs in listeMedecins.iterrows():
+        Utilisateur.objects.create(username = valeurs.username,
+                                   password = valeurs.motDePasse,
+                                   role = "medecin")
+        
+if len(Utilisateur.objects.filter(role="patient")) == 0:
+    alimentationPatients()
+if len(Utilisateur.objects.filter(role="medecin")) == 0:
+    alimentationMedecins()
