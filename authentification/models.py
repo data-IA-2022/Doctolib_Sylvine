@@ -10,6 +10,14 @@ class Utilisateur(AbstractUser):
         ("responsable", "responsable"),
     )
 
+    # Set the username field as the primary key
+    username = models.CharField(
+        verbose_name='Username',
+        max_length=150,
+        unique=True,
+        primary_key=True  # This makes 'username' the primary key
+    )
+
     role = models.CharField(max_length=30, 
                             choices=lesRoles, 
                             verbose_name='Rôle', null=True)

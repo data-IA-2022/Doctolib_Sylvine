@@ -6,6 +6,7 @@ from authentification.models import Utilisateur, medecinPatient
 import pandas as pd
 import csv
 import numpy as np
+from application.forms import MedDataForm
 
 
 @login_required
@@ -86,30 +87,6 @@ def associationMedecinPatient(request):
 
 
 ## alimenter BDD medData
-# # VERSION 1
-# def alimentationMedData(): # est une fonction, pas une vue, donc ne concerne pas de requete
-#     donnees = pd.read_csv("application/data/dataMed.csv", sep=",")
-#     column_headers = donnees.columns
-#     print(column_headers)
-
-#     fields_list = [field.name for field in medData._meta.get_fields()]
-#     print(fields_list)
-#     for index, values in donnees.iterrows():
-
-
-#         model_data = {}
-    
-#         medData.objects.create(**model_data)
-
-    # for i in champBDD:
-    #     print(champBDD.name)
-        
-        # medData.objects.create()
-
-# alimentationMedData()
-
-
-## VERSION 2
 def alimentationMedData():  
     donnees = pd.read_csv("/home/sylvine/Documents/Projets/Projet10_Doctolib/Doctolib_Sylvine/application/data/dataMed.csv", sep=",")
     donnees = donnees.replace(np.nan, None)
@@ -128,9 +105,7 @@ def alimentationMedData():
             diastSoir=row['DiastSoir'],
             symptCardio=row['SymptCardio'],
             nbMed=row['NbMed'],
-            oubliMatinYN=row['OubliMatinYN'] == 'y',  # Convert 'y' to True and 'n' to False
-            oubliSoirYN=row['OubliSoirYN'] == 'y',
-            effetSecYN=row['EffetSecYN'] == 'y',
+            oubliMatinYN=row['OubliMatinYN'] == 'y',  # CoMedDataForm
             symptomesYN=row['SymptomesYN'] == 'y',
             effetSympt=row['EffetSympt'],
             alcoolYN=row['AlcoolYN'] == 'y',
@@ -201,45 +176,21 @@ def alimentationMedData():
             mainsMoites=row['MainsMoites']
         )
 
-# ## VERSION 3 chaptgpt
-# def populate_database_from_csv():
-#     file_path = "application/data/dataMed.csv"
-#     with open(file_path, 'r', newline='') as csvfile:
-#         csv_reader = csv.reader(csvfile)
-#         next(csv_reader)  # Skip the header row if it exists in the CSV
-
-#         for row in csv_reader:
-#             model_data = {}
-#             for field, cell_value in zip(medData._meta.fields[1:], row):
-#                 if not cell_value:  # Check for empty cells in the CSV
-#                     model_data[field.name] = None
-#                 else:
-#                     model_data[field.name] = cell_value
-
-#             medData.objects.create(**model_data)
-
-# # VERSION 4
-# def populate_database_from_csv():
-#     file_path = "application/data/dataMed.csv"
-#     data = pd.read_csv(file_path)
-    
-#     for index, row in data.iterrows():
-#         model_data = {}
-        
-#         for field_name in medData._meta.fields_map.keys():
-#             cell_value = row[field_name]
-#             model_data[field_name] = cell_value if not pd.isna(cell_value) else None
-
-#         medData.objects.create(**model_data)
-
-
-
-# # aliment only if table is empty
-# if medData.objects.count() == 0:
-#     populate_database_from_csv()
-
 # aliment only if table is empty
 if medData.objects.count() == 0:
     alimentationMedData()
 
+@login_required
+def create_med_data(request):
+    form = MedDataForm()
 
+    if request.method == 'POST':
+        form = MedDataForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'form.html', context)
