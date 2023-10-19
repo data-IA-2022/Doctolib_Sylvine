@@ -2,22 +2,12 @@
 
 {% block content %}
 <title>Formulaire remplissage</title>
-<h1> Formulaire remplissage </h1>
-<form action="{% url 'create_med_data' %}" method="post">
+<h1> Bienvenue dans le formulaire santé {{user}} !</h1> 
+<form id="formContainer" action="{% url 'create_med_data' %}" method="post">
     {% csrf_token %}
 
     {{form.as_p}}
 
-    <!--
-    {% for field in form %}
-        <div class="form-row">
-            <div class="form-group col-md-6">
-                <label for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
-                {{ field }}
-            </div>
-        </div>
-    {% endfor %}
-    -->
     <input type="submit" value="Submit">
 </form>
 

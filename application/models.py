@@ -9,7 +9,7 @@ class medData(models.Model):
     ]
  
     # anonymousID = models.CharField(max_length=50) 
-    anonymousID = models.ForeignKey(Utilisateur, on_delete = models.CASCADE)# trouver moyen pour remplir auto avec l'ID avec la table correspondance avec username
+    anonymousID = models.ForeignKey(Utilisateur, null= True, on_delete = models.CASCADE)# trouver moyen pour remplir auto avec l'ID avec la table correspondance avec username
     date = models.DateField() 
     poids = models.DecimalField(max_digits=6, decimal_places=2, null=True)
     tourTaille = models.DecimalField(max_digits=6, decimal_places=2)

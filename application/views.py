@@ -182,15 +182,18 @@ if medData.objects.count() == 0:
 
 @login_required
 def create_med_data(request):
+    user = request.user.username
     form = MedDataForm()
 
     if request.method == 'POST':
         form = MedDataForm(request.POST)
         if form.is_valid():
             form.save()
+            return render(request, 'form_success.html', {'message': 'Formulaire soumis avec succès!'})
 
     context = {
-        'form': form
+        'form': form,
+        'user': user
     }
 
     return render(request, 'form.html', context)
