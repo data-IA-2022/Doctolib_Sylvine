@@ -7,6 +7,7 @@ import pandas as pd
 import csv
 import numpy as np
 from application.forms import MedDataForm
+import datetime
 
 
 @login_required
@@ -204,6 +205,7 @@ if medData.objects.count() == 0:
 @login_required
 def create_med_data(request):
     user = request.user.username
+    dateJour = datetime.datetime.now()
     form = MedDataForm()
 
     if request.method == 'POST':

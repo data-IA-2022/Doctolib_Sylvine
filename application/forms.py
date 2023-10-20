@@ -18,6 +18,8 @@ class MedDataForm(ModelForm):
             "symptCardio": "Décrivez vos symptomes cardiovasculaires en quelques mots (malaise, perte de connaissance…)",
             "nbMed": "Nombre de médicaments pris dans la journée",
             "oubliMatinYN": "Oubli de prendre le(s) médicament(s) le matin ",
+            "oubliSoirYN": "Oubli de prendre le(s) médicament(s) le soir ",
+            "effetSecYN": "Présence d'effets secondaires ",
             "symptomesYN": "Symptôme(s) particulier(s) remarqué(s) ",
             "effetSympt": "Décrivez vos effets secondaires et/ou symptomes particuliers remarqués en quelques mots",
             "alcoolYN": "Consommation d'alcool",
