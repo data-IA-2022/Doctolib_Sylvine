@@ -18,9 +18,30 @@ def accueil(request):
 
 @login_required
 # page visualisation des données
-def visMedData(request):
+def visMedData(request): # version Sylvine
 	pourVisu = medData.objects.all()
 	return render(request, "visMedData.html", locals())
+
+@login_required
+def tableVisualisation(request): # version Patrick
+    user = request.user.username
+    # Je récupère les champs de la table formulaire santé
+    champsMedData = [field.name for field in medData._meta.get_fields()]
+    # Je récupère les ids des lignes de la table formulaire santé
+    idMedData = [valeur.id for valeur in medData.objects.all()]
+    # Je crée une liste qui contiendra les valeurs des lignes
+    # Il y a autant d'élément que de ligne, donc que d'ids récupéré
+    # FormulaireSante.objects.filter(id=id).values()[0].values()
+    # Dans le code ci-dessus je récupère la ligne ayant un certain id
+    # Ensuite je récupère les valeurs de la ligne .values
+    # Le 1er élément qui est le dictionnaire des colonnes/valeurs
+    # et enfin uniquement les valeurs
+    dataMedData = [medData.objects.filter(id=id).values()[0].values() for id in idMedData]
+
+    return render(request, "tableVisualisation.html",
+                    {"dataMedData" : dataMedData,
+                    "champsMedData" : champsMedData,
+                    "user" : user})
 
 @login_required
 # réinitialisation mdp

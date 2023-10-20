@@ -162,4 +162,4 @@ application/migrations/
 authentification/migrations/
 transfert.py
 tests.py
-
+static_root
