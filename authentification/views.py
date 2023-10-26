@@ -9,6 +9,8 @@ import pandas as pd
 
 def connexion(request):
     message = ""
+    username = ""
+    motDePasse = ""
     if request.method == "POST": # a-t-on reçu des data d'un formulaire ?
         username = request.POST["username"]
         motDePasse = request.POST["motDePasse"]
@@ -19,8 +21,10 @@ def connexion(request):
             return redirect("accueil")
         else: # si la vérification n'est pas bonne
             message = "username ou/et mot de passe incorrect"
-    return render(request,
-                      "connexion.html", {"message" : message})
+    return render(request, "connexion.html", 
+                  {"message" : message, 
+                   "username" : username, 
+                   "motDePasse" : motDePasse})
 
 def deconnexion(request):
     logout(request)

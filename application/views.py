@@ -220,3 +220,8 @@ def create_med_data(request):
     }
 
     return render(request, 'form.html', context)
+
+
+def rgpd(request):
+    return render(request,"rgpd.html",
+                context={"site_name": "Bee Patient"})
