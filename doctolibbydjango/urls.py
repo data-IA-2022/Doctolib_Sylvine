@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from application.views import accueil, visMedData, comptes, edaia, associationMedecinPatient, create_med_data, tableVisualisation, rgpd
+from application.views import accueil, comptes, edaia, associationMedecinPatient, create_med_data, tableVisualisation, rgpd, forbidden
 from authentification.views import connexion, deconnexion, inscription
 
 urlpatterns = [
@@ -26,11 +26,11 @@ urlpatterns = [
     path("comptes", comptes, name="comptes"),
     path("deconnexion/",deconnexion, name="deconnexion"),
     path("inscription/",inscription, name="inscription"),
-    path("visMedData/",visMedData, name="visMedData"),
     path("edaia/",edaia, name="edaia"),
     path("associationMedecinPatient/", associationMedecinPatient, name="associationMedecinPatient"),
     path("create_med_data/",create_med_data, name="create_med_data"),
     path("tableVisualisation/",tableVisualisation, name="tableVisualisation"),
     path("rgpd/",rgpd, name="rgpd"),
+    path("forbidden/",forbidden, name="forbidden"),
 
 ]

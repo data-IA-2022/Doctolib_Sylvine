@@ -1,15 +1,21 @@
 <nav>
   <ul>
       <li><a href="{% url 'accueil' %}">Accueil</a></li>
-      <li><a href="{% url 'create_med_data' %}">Formulaire de santé </a></li>
-      <!-- <li><a href="">Historique</a></li> -->
-      {% if user.role == "medecin" %}
-          <li><a href="{% url 'edaia' %}">EDA et IA</a></li>
+      <li><a href="{% url 'tableVisualisation' %}">Visualiser l'historique des données</a></li>
+
+      {% if user.role == "patient" %}
+        <li><a href="{% url 'create_med_data' %}">Formulaire de santé</a></li>
       {% endif %}
-      <li><a href="{% url 'tableVisualisation' %}">Visualiser une table de données (version Patrick)</a></li>
-      <li><a href="{% url 'visMedData' %}">Visualiser une table de données (version Sylvine) </a></li>
-      <li><a href="{% url 'associationMedecinPatient' %}">Associer un médecin à un patient</a></li>
-      <li><a href="{% url 'comptes' %}">Comptes</a></li>
+
+      {% if user.role == "medecin" %}
+        <li><a href="{% url 'edaia' %}">EDA et IA</a></li>
+      {% endif %}
+
+      {% if user.role == "responsable" %}
+        <li><a href="{% url 'associationMedecinPatient' %}">Associer un médecin à un patient</a></li>
+      {% endif %}
+
+      <li><a href="{% url 'comptes' %}">Mettre à jour votre compte</a></li>
       <li><a href="{% url 'deconnexion' %}">Déconnexion</a></li>
   </ul>
 </nav>

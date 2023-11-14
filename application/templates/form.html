@@ -3,6 +3,7 @@
 {% block content %}
 <title>Formulaire remplissage</title>
 <h1> Bienvenue dans le formulaire santé {{user}} !</h1>
+<p> votre rôle est {{role}}</p>
 <form id="formContainer" action="{% url 'create_med_data' %}" method="post">
     {% csrf_token %}
 

@@ -13,15 +13,9 @@ import datetime
 @login_required
 # page d'accueil
 def accueil(request):
-    prenom = request.user.username
+    username = request.user.username
     return render(request,"accueil.html",
-                  context={"prenom": prenom})
-
-@login_required
-# page visualisation des données
-def visMedData(request): # version Sylvine
-	pourVisu = medData.objects.all()
-	return render(request, "visMedData.html", locals())
+                  context={"username": username})
 
 @login_required
 def tableVisualisation(request): # version Patrick
@@ -29,7 +23,7 @@ def tableVisualisation(request): # version Patrick
         return redirect("accueil")
     
     else: 
-        user = request.user.username
+        username = request.user.username
         # On récupère le nom des champs de la table medData
         champsMedData = [field.name for field in medData._meta.get_fields()]
 
@@ -41,14 +35,14 @@ def tableVisualisation(request): # version Patrick
 
         elif request.user.role == "patient":
             #collect all lines for this user
-            dataMedData_user = medData.objects.filter(anonymousID=user).values() # this returns a list of dictionnaries, one dic for each line of medData for this user
+            dataMedData_user = medData.objects.filter(anonymousID=username).values() # this returns a list of dictionnaries, one dic for each line of medData for this user
             # for each dictionnary (i in range length of the dictionnary), get the values
             dataMedData = [dataMedData_user.values()[i].values() for i in range(dataMedData_user.count())]
         
         elif request.user.role == "medecin":
             # if médecin
             # Query the medecinPatient model to get all idPatient instances corresponding to the idMedecin
-            idPatients_list = medecinPatient.objects.filter(idMedecin__username=user).values_list('idPatient', flat=True)
+            idPatients_list = medecinPatient.objects.filter(idMedecin__username=username).values_list('idPatient', flat=True)
             # filter the medData table on all idPatient retrieved in the list
             dataMedData_user = medData.objects.filter(anonymousID__in=idPatients_list).values()
             # for each dictionnary (i in range length of the dictionnary), get the values
@@ -57,16 +51,14 @@ def tableVisualisation(request): # version Patrick
         return render(request, "tableVisualisation.html",
                 {"dataMedData" : dataMedData,
                 "champsMedData" : champsMedData,
-                "user" : user})
-
-
-
+                "username": username,})
 
 @login_required
-# réinitialisation mdp
+# mettre a jour votre compte
 def comptes(request):
     regexMDP = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-]).{8,}$"
     message = ""
+    username = request.user.username
     if request.method == "POST":
         ancienMDP = request.POST["ancienMDP"]
         nouveauMDP1 = request.POST["nouveauMDP1"]
@@ -87,43 +79,91 @@ def comptes(request):
             message = "L'ancien mot de passe n'est pas bon. T'es qui toi ? 😡"
     return render(request,
                   "comptes.html",
-                  {"regexMDP" : regexMDP, "message" : message})
+                  {"regexMDP" : regexMDP, 
+                   "message" : message,
+                   "username": username,})
 
 @login_required
 # page avec eda et ia pour uniquement le médecin
 def edaia(request):
+    username = request.user.username
     if request.user.role != "medecin":
-        return redirect("accueil")
+        return redirect("accueil", {"username": username,})
     else:
-        return render(request, "edaia.html")
+        return render(request, "edaia.html", {"username": username,})
 
 @login_required
 def associationMedecinPatient(request):
-    # 1- Récupérer la liste des id des médecins et des patients
-    # 2- Ensuite on ne garde que les patients qui ne sont pas dans la table medecinPatient
-    # 3- On créé ensuite un template qui contiendra une liste déroulante
-    # 4- Dans cette liste déroulante on va afficher d'un côté les médecins
-    # et de l'autre les patients filtrés (voir étape 2)
-    # https://developer.mozilla.org/fr/docs/Web/HTML/Element/select
+    username = request.user.username
+    if request.user.role != "responsable":
+        return redirect("forbidden")
     
-    medecins = [medecin for medecin in Utilisateur.objects.filter(role="medecin")]
-    patients = [patient for patient in Utilisateur.objects.filter(role="patient")]
-    listePatientsAssocies = [ligne.idPatient for ligne in medecinPatient.objects.all()]
-    print("listePatientsAssocies :", listePatientsAssocies)
-    listePatientsNonAssocies = [patient for patient in patients if patient not in listePatientsAssocies]
-    tableAssociationMedecinPatient = medecinPatient.objects.all()
-    
-    if request.method == "POST":
-        medecin = request.POST["medecin"]
-        patient = request.POST["patient"]
-        print("medecin", type(medecin), medecin)
-        medecinPatient(idMedecin = Utilisateur.objects.filter(username=medecin)[0], 
-                       idPatient = Utilisateur.objects.filter(username=patient)[0]).save()
-        return redirect("associationMedecinPatient")
-    return render(request, "associationMedecinPatient.html",
-                  {"listePatientsNonAssocies" : listePatientsNonAssocies,
-                   "medecins" : medecins,
-                   "tableAssociationMedecinPatient" : tableAssociationMedecinPatient})
+    else:
+        # 1- Récupérer la liste des id des médecins et des patients
+        # 2- Ensuite on ne garde que les patients qui ne sont pas dans la table medecinPatient
+        # 3- On créé ensuite un template qui contiendra une liste déroulante
+        # 4- Dans cette liste déroulante on va afficher d'un côté les médecins
+        # et de l'autre les patients filtrés (voir étape 2)
+        # https://developer.mozilla.org/fr/docs/Web/HTML/Element/select        
+        medecins = [medecin for medecin in Utilisateur.objects.filter(role="medecin")]
+        patients = [patient for patient in Utilisateur.objects.filter(role="patient")]
+        listePatientsAssocies = [ligne.idPatient for ligne in medecinPatient.objects.all()]
+        print("listePatientsAssocies :", listePatientsAssocies)
+        listePatientsNonAssocies = [patient for patient in patients if patient not in listePatientsAssocies]
+        tableAssociationMedecinPatient = medecinPatient.objects.all()
+        
+        if request.method == "POST":
+            medecin = request.POST["medecin"]
+            patient = request.POST["patient"]
+            print("medecin", type(medecin), medecin)
+            medecinPatient(idMedecin = Utilisateur.objects.filter(username=medecin)[0], 
+                        idPatient = Utilisateur.objects.filter(username=patient)[0]).save()
+            return redirect("associationMedecinPatient", {"username": username,})
+        
+        return render(request, "associationMedecinPatient.html",
+                    {"listePatientsNonAssocies" : listePatientsNonAssocies,
+                    "medecins" : medecins,
+                    "tableAssociationMedecinPatient" : tableAssociationMedecinPatient,
+                    "username": username,})
+
+@login_required
+# page formulaire santé
+def create_med_data(request):
+    username = request.user.username
+    role = request.user.role
+    dateJour = datetime.datetime.now()
+    form = MedDataForm()
+
+    if request.method == 'POST':
+        form = MedDataForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return render(request, 'form_success.html', {'message': 'Formulaire soumis avec succès!'})
+
+    context = {
+        'form': form,
+        'username': username,
+        'role': role,
+    }
+
+    return render(request, 'form.html', context)
+
+# page rgpd
+def rgpd(request):
+    username = request.user.username
+    return render(request,"rgpd.html",
+                context={"site_name": "Bee Patient",
+                         'username': username,})
+
+
+@login_required
+# page accès interdit
+def forbidden(request):
+    username = request.user.username
+    role = request.user.role
+    return render(request,"forbidden.html",
+                  context={"username": username,
+                           "role": role})
 
 
 # alimenter BDD medData
@@ -226,26 +266,3 @@ def alimentationMedData():
 if medData.objects.count() == 0:
     alimentationMedData()
 
-@login_required
-def create_med_data(request):
-    user = request.user.username
-    dateJour = datetime.datetime.now()
-    form = MedDataForm()
-
-    if request.method == 'POST':
-        form = MedDataForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return render(request, 'form_success.html', {'message': 'Formulaire soumis avec succès!'})
-
-    context = {
-        'form': form,
-        'user': user
-    }
-
-    return render(request, 'form.html', context)
-
-
-def rgpd(request):
-    return render(request,"rgpd.html",
-                context={"site_name": "Bee Patient"})
