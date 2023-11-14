@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import redirect
 from authentification.models import Utilisateur
+
 import random 
 import string
 import pandas as pd
@@ -16,6 +17,9 @@ def connexion(request):
         motDePasse = request.POST["motDePasse"]
         verification = authenticate(username = username,
                                     password = motDePasse)
+        print(username)
+        print(motDePasse)
+        print(verification)
         if verification != None:
             login(request, verification)
             return redirect("accueil")
@@ -43,22 +47,27 @@ def inscription(request):
     return render(request,
                     "inscription.html", {"ideeMDP" : ideeMDP.replace(" ", "")}) # ici, c'est s'il n'y a pas de requete post, ie on vient d'arriver sur la page pour la première fois
 
+from django.contrib.auth.hashers import make_password
 
+# importer utilisateurs depuis csv
 def alimentationPatients():
-    listePatients = pd.read_csv("/home/sylvine/Documents/Projets/Projet10_Doctolib/Doctolib_Sylvine/authentification/data/listePatients.csv",
+    listePatients = pd.read_csv("/home/sylvine/Documents/Projets/Projet10.2_Doct/Doctolib_Sylvine/authentification/data/listePatients.csv",
                                 )
     for index, valeurs in listePatients.iterrows():
         Utilisateur.objects.create(username = valeurs.username,
-                                   password = valeurs.motDePasse,
+                                   password = make_password(valeurs.motDePasse),
                                    role = "patient")
         
 def alimentationMedecins():
-    listeMedecins = pd.read_csv("/home/sylvine/Documents/Projets/Projet10_Doctolib/Doctolib_Sylvine/authentification/data/listeMedecins.csv",
+    listeMedecins = pd.read_csv("/home/sylvine/Documents/Projets/Projet10.2_Doct/Doctolib_Sylvine/authentification/data/listeMedecins.csv",
                                 )
     for index, valeurs in listeMedecins.iterrows():
         Utilisateur.objects.create(username = valeurs.username,
-                                   password = valeurs.motDePasse,
-                                   role = "medecin")
+                                   password = make_password(valeurs.motDePasse),
+                                   role = "medecin")     
+
+        
+
         
 if len(Utilisateur.objects.filter(role="patient")) == 0:
     alimentationPatients()

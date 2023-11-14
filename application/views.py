@@ -25,24 +25,42 @@ def visMedData(request): # version Sylvine
 
 @login_required
 def tableVisualisation(request): # version Patrick
-    user = request.user.username
-    # Je récupère les champs de la table formulaire santé
-    champsMedData = [field.name for field in medData._meta.get_fields()]
-    # Je récupère les ids des lignes de la table formulaire santé
-    idMedData = [valeur.id for valeur in medData.objects.all()]
-    # Je crée une liste qui contiendra les valeurs des lignes
-    # Il y a autant d'élément que de ligne, donc que d'ids récupéré
-    # FormulaireSante.objects.filter(id=id).values()[0].values()
-    # Dans le code ci-dessus je récupère la ligne ayant un certain id
-    # Ensuite je récupère les valeurs de la ligne .values
-    # Le 1er élément qui est le dictionnaire des colonnes/valeurs
-    # et enfin uniquement les valeurs
-    dataMedData = [medData.objects.filter(id=id).values()[0].values() for id in idMedData]
+    if request.user.role not in ["responsable","patient","medecin"]:
+        return redirect("accueil")
+    
+    else: 
+        user = request.user.username
+        # On récupère le nom des champs de la table medData
+        champsMedData = [field.name for field in medData._meta.get_fields()]
 
-    return render(request, "tableVisualisation.html",
-                    {"dataMedData" : dataMedData,
-                    "champsMedData" : champsMedData,
-                    "user" : user})
+        if request.user.role == "responsable":
+            # on récupère une liste de tous les id contenus dans la table medData
+            idMedData = [valeur.id for valeur in medData.objects.all()]
+            # pour chaque id récupéré, on extrait de la table les valeurs dans le premier (et unique ici) élément du dictionnaire correpsondant à l'id
+            dataMedData = [medData.objects.filter(id=id).values()[0].values() for id in idMedData]
+
+        elif request.user.role == "patient":
+            #collect all lines for this user
+            dataMedData_user = medData.objects.filter(anonymousID=user).values() # this returns a list of dictionnaries, one dic for each line of medData for this user
+            # for each dictionnary (i in range length of the dictionnary), get the values
+            dataMedData = [dataMedData_user.values()[i].values() for i in range(dataMedData_user.count())]
+        
+        elif request.user.role == "medecin":
+            # if médecin
+            # Query the medecinPatient model to get all idPatient instances corresponding to the idMedecin
+            idPatients_list = medecinPatient.objects.filter(idMedecin__username=user).values_list('idPatient', flat=True)
+            # filter the medData table on all idPatient retrieved in the list
+            dataMedData_user = medData.objects.filter(anonymousID__in=idPatients_list).values()
+            # for each dictionnary (i in range length of the dictionnary), get the values
+            dataMedData = [dataMedData_user.values()[i].values() for i in range(dataMedData_user.count())]
+
+        return render(request, "tableVisualisation.html",
+                {"dataMedData" : dataMedData,
+                "champsMedData" : champsMedData,
+                "user" : user})
+
+
+
 
 @login_required
 # réinitialisation mdp
@@ -108,15 +126,21 @@ def associationMedecinPatient(request):
                    "tableAssociationMedecinPatient" : tableAssociationMedecinPatient})
 
 
-## alimenter BDD medData
+# alimenter BDD medData
 def alimentationMedData():  
-    donnees = pd.read_csv("/home/sylvine/Documents/Projets/Projet10_Doctolib/Doctolib_Sylvine/application/data/dataMed.csv", sep=",")
+    donnees = pd.read_csv("/home/sylvine/Documents/Projets/Projet10.2_Doct/Doctolib_Sylvine/application/data/dataMed.csv")
     donnees = donnees.replace(np.nan, None)
 
     for index, row in donnees.iterrows():
+        patient_username_str = row['AnonymousID']
+        # ligne = Utilisateur.objects.filter(username=patient_username_str).values()[0].values()
+        # patient_username = list(ligne)[0]
+
+        # il faut que le nom type 'P01' soit une instance et pas une string
+        utilisateur_instance, created = Utilisateur.objects.get_or_create(username=patient_username_str)
 
         medData.objects.create(
-            anonymousID=row['AnonymousID'],
+            anonymousID=utilisateur_instance,
             date=row['Date'],
             poids=row['Poids'],
             tourTaille=row['tourTaille'],
