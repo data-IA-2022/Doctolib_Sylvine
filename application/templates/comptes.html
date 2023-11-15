@@ -4,6 +4,7 @@
 <title>Comptes</title>
 
 <h1>Mise à jour du mot de passe</h1>
+<br>
 <form method = "post">
     {{ message }}
     {% csrf_token %}
@@ -11,8 +12,9 @@
     <input type="password" required name="ancienMDP"><br>
     <label>Indiquez un nouveau mot de passe :</label><br>
     <input type="password" required pattern={{ regexMDP }} name="nouveauMDP1"><br>
-    <label>Indiquez de nouveau votre mot de passe</label><br>
+    <label>Confirmez votre nouveau mot de passe</label><br>
     <input type="password" required pattern={{ regexMDP }} name="nouveauMDP2"><br>
+    <br>
     <input type="submit">
 </form>
 

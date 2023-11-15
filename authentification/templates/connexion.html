@@ -4,8 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connexion</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
 </head>
 <body>
+  {% load static %}
+  <div class="header-row" id="header-row" style="padding: 0px; overflow:hidden; height:300px;">
+    <!-- container-fluid is the same as container but spans a wider viewport, 
+it still has padding though so you need to remove this either by adding 
+another class with no padding or inline as I did below -->
+<div class="container-fluid" style="padding: 0px;">
+  <div class="row"> 
+    <!-- You originally has it set up for two columns, remove the second 
+column as it is unneeded and set the first to always span all 12 columns 
+even when at its smallest (xs). Set the overflow to hidden so no matter 
+the height of your image it will never show outside this div-->
+     <div class="col-xs-12"> 
+        <a class="navbar-brand logo" href="#">
+    <!-- place your image here -->
+           <img class = cover src="{% static 'images/medecin.jpg' %}" alt="illu medecin" style="width:100%;min-height:350px;max-height:600px;" object-fit = cover>
+        </a> 
+     </div>     
+  </div>
+</div>
+</div>
+
+
+
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="{% static 'images/BeePatient_w_trans.png' %}" alt="logo" height="80">
+      </a>
+    </div>
+  </nav>
+  <h1>Connectez-vous</h1>
   {{ message }}
   {{ username }}
   {{ motDePasse }}
@@ -16,6 +50,6 @@
     <input type="submit">
   </form>  
   <p>Pas de compte? Inscrivez-vous ici: </p>
-  <p><a href=""{% url 'inscription' %}>Inscription </a> </p>
+  <p><a href="{% url 'inscription' %}">Inscription </a> </p>
 </body>
 </html>

@@ -1,0 +1,14 @@
+.cover {
+    object-fit: cover;
+  }
+
+  
+body {
+  padding-bottom: 70px; /* Adjust this value to match the height of your footer */
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}

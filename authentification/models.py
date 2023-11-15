@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 
 
 class Utilisateur(AbstractUser):
-
     lesRoles = (
         ('patient', 'patient'),
         ("medecin", 'medecin'),

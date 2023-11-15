@@ -20,38 +20,36 @@ def accueil(request):
 @login_required
 def tableVisualisation(request): # version Patrick
     if request.user.role not in ["responsable","patient","medecin"]:
-        return redirect("accueil")
+        return redirect("accueil")    
+
+    username = request.user.username
+    # On récupère le nom des champs de la table medData
+    champsMedData = [field.name for field in medData._meta.get_fields()]
+
+    if request.user.role == "responsable":
+        # on récupère une liste de tous les id contenus dans la table medData
+        idMedData = [valeur.id for valeur in medData.objects.all()]
+        # pour chaque id récupéré, on extrait de la table les valeurs dans le premier (et unique ici) élément du dictionnaire correpsondant à l'id
+        dataMedData = [medData.objects.filter(id=id).values()[0].values() for id in idMedData]
+
+    elif request.user.role == "patient":
+        #collect all lines for this user
+        dataMedData_user = medData.objects.filter(anonymousID=username).values() # this returns a list of dictionnaries, one dic for each line of medData for this user
+        # for each dictionnary (i in range length of the dictionnary), get the values
+        dataMedData = [dataMedData_user.values()[i].values() for i in range(dataMedData_user.count())]
     
-    else: 
-        username = request.user.username
-        # On récupère le nom des champs de la table medData
-        champsMedData = [field.name for field in medData._meta.get_fields()]
+    elif request.user.role == "medecin":
+        # Query the medecinPatient model to get all idPatient instances corresponding to the idMedecin
+        idPatients_list = medecinPatient.objects.filter(idMedecin__username=username).values_list('idPatient', flat=True)
+        # filter the medData table on all idPatient retrieved in the list
+        dataMedData_user = medData.objects.filter(anonymousID__in=idPatients_list).values()
+        # for each dictionnary (i in range length of the dictionnary), get the values
+        dataMedData = [dataMedData_user.values()[i].values() for i in range(dataMedData_user.count())]
 
-        if request.user.role == "responsable":
-            # on récupère une liste de tous les id contenus dans la table medData
-            idMedData = [valeur.id for valeur in medData.objects.all()]
-            # pour chaque id récupéré, on extrait de la table les valeurs dans le premier (et unique ici) élément du dictionnaire correpsondant à l'id
-            dataMedData = [medData.objects.filter(id=id).values()[0].values() for id in idMedData]
-
-        elif request.user.role == "patient":
-            #collect all lines for this user
-            dataMedData_user = medData.objects.filter(anonymousID=username).values() # this returns a list of dictionnaries, one dic for each line of medData for this user
-            # for each dictionnary (i in range length of the dictionnary), get the values
-            dataMedData = [dataMedData_user.values()[i].values() for i in range(dataMedData_user.count())]
-        
-        elif request.user.role == "medecin":
-            # if médecin
-            # Query the medecinPatient model to get all idPatient instances corresponding to the idMedecin
-            idPatients_list = medecinPatient.objects.filter(idMedecin__username=username).values_list('idPatient', flat=True)
-            # filter the medData table on all idPatient retrieved in the list
-            dataMedData_user = medData.objects.filter(anonymousID__in=idPatients_list).values()
-            # for each dictionnary (i in range length of the dictionnary), get the values
-            dataMedData = [dataMedData_user.values()[i].values() for i in range(dataMedData_user.count())]
-
-        return render(request, "tableVisualisation.html",
-                {"dataMedData" : dataMedData,
-                "champsMedData" : champsMedData,
-                "username": username,})
+    return render(request, "tableVisualisation.html",
+            {"dataMedData" : dataMedData,
+            "champsMedData" : champsMedData,
+            "username": username,})
 
 @login_required
 # mettre a jour votre compte
@@ -83,14 +81,29 @@ def comptes(request):
                    "message" : message,
                    "username": username,})
 
-@login_required
+# @login_required
 # page avec eda et ia pour uniquement le médecin
+# def edaia(request):
+#     username = request.user.username
+#     if request.user.role != "medecin":
+#         return redirect("accueil", {"username": username,})
+#     else:
+#         return render(request, "edaia.html", {"username": username,})
+    
+@login_required
 def edaia(request):
-    username = request.user.username
-    if request.user.role != "medecin":
-        return redirect("accueil", {"username": username,})
-    else:
-        return render(request, "edaia.html", {"username": username,})
+    med_data = medData.objects.all()
+    data = []
+    for entry in med_data:
+        data.append({
+            "poids": entry.poids,
+            "tourTaille": entry.tourTaille
+        })
+
+    return render(request, 'edaia.html', {
+        "poids_data": data
+    })
+
 
 @login_required
 def associationMedecinPatient(request):
@@ -118,7 +131,8 @@ def associationMedecinPatient(request):
             print("medecin", type(medecin), medecin)
             medecinPatient(idMedecin = Utilisateur.objects.filter(username=medecin)[0], 
                         idPatient = Utilisateur.objects.filter(username=patient)[0]).save()
-            return redirect("associationMedecinPatient", {"username": username,})
+            # return redirect("forbidden")
+            return redirect("associationMedecinPatient")
         
         return render(request, "associationMedecinPatient.html",
                     {"listePatientsNonAssocies" : listePatientsNonAssocies,
@@ -132,7 +146,8 @@ def create_med_data(request):
     username = request.user.username
     role = request.user.role
     dateJour = datetime.datetime.now()
-    form = MedDataForm()
+    # form = MedDataForm()
+    form = MedDataForm(initial={'anonymousID': request.user, 'date': dateJour})
 
     if request.method == 'POST':
         form = MedDataForm(request.POST)
@@ -148,13 +163,21 @@ def create_med_data(request):
 
     return render(request, 'form.html', context)
 
+@login_required
+# page accès interdit
+def form_success(request):
+    username = request.user.username
+    role = request.user.role
+    return render(request,"form_success.html",
+                  context={"username": username,
+                           "role": role})
+
 # page rgpd
 def rgpd(request):
     username = request.user.username
     return render(request,"rgpd.html",
                 context={"site_name": "Bee Patient",
                          'username': username,})
-
 
 @login_required
 # page accès interdit
@@ -164,7 +187,6 @@ def forbidden(request):
     return render(request,"forbidden.html",
                   context={"username": username,
                            "role": role})
-
 
 # alimenter BDD medData
 def alimentationMedData():  

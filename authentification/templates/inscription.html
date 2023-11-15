@@ -3,9 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Inscription</title>
+  {% load static %}
+  <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
 </head>
 <body>
+  {% load static %}
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="{% static 'images/BeePatient_w_trans.png' %}" alt="logo" height="80">
+      </a>
+    </div>
+  </nav>
   <h1> Inscription</h1>
   <p> voici une idée de mdp :</p>
     {{ ideeMDP }}
@@ -16,6 +26,6 @@
     <input type="submit">
   </form>  
   <p> Revenir à la page de connexion</p>
-  <p><a href=""{% url 'connexion' %}> Connexion</a></p>
+  <p><a href="{% url 'connexion' %}"> Connexion</a></p>
 </body>
 </html>

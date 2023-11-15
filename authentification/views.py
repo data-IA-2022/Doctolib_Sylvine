@@ -66,9 +66,7 @@ def alimentationMedecins():
                                    password = make_password(valeurs.motDePasse),
                                    role = "medecin")     
 
-        
-
-        
+                
 if len(Utilisateur.objects.filter(role="patient")) == 0:
     alimentationPatients()
 if len(Utilisateur.objects.filter(role="medecin")) == 0:
