@@ -17,8 +17,8 @@ Un patient peut remplir le ou les formulaires sur la plateforme. Il peut voir l�
 ​Aucune information personnelle n’est présente sur la plateforme. On utilisera un système d’ID pour cibler les comptes. Il leur est possible de réinitialiser leur mot de passe, et une recommandation de mot de passe est proposée sur la plateforme (avec 8 caractères dont chiffres, lettres minuscules et majuscules ainsi qu’un ou plusieurs symboles).
 
 ​
-##  Données et explications
-La base de données se compose de trois tables principales :
+##  Données et base de données
+La base de données sqlite intégrée dans Django se compose de trois tables principales, réparties dans les deux applications "authentification" et "application" :
 
 ![](https://github.com/data-IA-2022/Doctolib_Sylvine/blob/main/images/schema_bdd.png)
 
@@ -27,12 +27,16 @@ La table **Utilisateurs** comprend les informations de connexion de chaque utili
 * médecin = peut visualiser les données médicales uniquement des patients qui lui sont associés ; peut visualiser ces données sous forme graphique
 * patient = peut visualiser uniquement ses propres données médicales ; peut accéder au formulaire pour entrer de nouvelles données.
 
+Pour l'instant, cette table contient des données chargées dans la base à l'aide d'une fonction dans le views.py
+
 La table **medecinPatients** permet de relier chaque patient au médecin qui le suit, les colonnes idMedecin et idPatient étant des foreignkey pointant vers username dans la table Utilisateurs.
 
 La table **medData** contient les données médicales de chaque patient, avec notamment les champs suivants:
 * anonymousID = l'identifiant du patient (foreignkey pointant vers username dans la table Utilisateurs)
 * date = la date de remplissage du formulaire
 * de nombreux champs concernant des données de nature médicale ou reliées au niveau de stress du patient
+
+Pour l'instant, cette table contient des données fictives chargées dans la base à l'aide d'une fonction dans le views.py
 
 ## Installation
 ### Requirements
