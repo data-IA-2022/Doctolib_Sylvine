@@ -38,7 +38,7 @@ La table **medData** contient les données médicales de chaque patient, avec no
 
 Pour l'instant, cette table contient des données fictives chargées dans la base à l'aide d'une fonction dans le views.py
 
-D'autres tables sont également présentes et ajoutées par Django
+D'autres tables sont également présentes et ajoutées par Django.
 
 ## Installation
 ### Requirements
@@ -59,7 +59,7 @@ Installez les requirements contenus dans le fichier requirements.txt
 
 ### Lancement du programme
 
-- Commenter toutes les parties du code qui font des remplissage de tables à partir de csv : lignes tant à tant dans fichier1, ligne tant à tant dans fichier 2
+- Commenter toutes les parties du code qui font des remplissage de tables à partir de csv : lignes 52 à 73 dans authentification/views.py, lignes 197 à 295 dans application/views.py
 
 - Faire les migrations sur la partie authentification:
 
@@ -69,7 +69,7 @@ Installez les requirements contenus dans le fichier requirements.txt
 - Créer un superuser
 
 `python manage.py createsuperuser`
-- Décommenter les lignes tant à tant dans le fichier 1
+- Décommenter les lignes 52 à 73 dans authentification/views.py
 - Lancer le programme pour remplir les tables dans authentification
 
 `python manage.py runserver`
@@ -77,7 +77,7 @@ Installez les requirements contenus dans le fichier requirements.txt
 - Faire les migrations sur la partie application:
 `python manage.py makemigrations application
 python manage.py migrate`
-- Décommenter les lignes tant à tant dans le fichier 2
+- Décommenter les lignes 197 à 295 dans application/views.py
 - Lancer le programme pour remplir la table dans application
 
 `python manage.py runserver`
