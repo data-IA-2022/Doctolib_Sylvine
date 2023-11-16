@@ -1,7 +1,5 @@
 # Projet application de médecine participative (Bee Patient)
-
 ![](https://github.com/data-IA-2022/Doctolib_Sylvine/blob/main/application/static/images/BeePatient.png)
-
 Projet monté dans le cadre de la formation dev IA portée par Simplon et le Greta Val de Loire.
 
 Ce projet a pour but de créer une application basée sur le framework Django pour construire une application de médecine participative, où des médecins gèrent un ensemble de patients qui doivent se connecter à intervalles définis afin de remplir des formulaires concernant divers aspects de santé. 
@@ -78,6 +76,8 @@ python manage.py migrate`
 `python manage.py runserver`
 
 - Le serveur tourne par défaut sur le port 8000 de votre machine. Pour y accéder, entrez cette adresse dans votre navigateur : http://127.0.0.1:8000/
+
+- Pensez à attribuer le rôle responsable au superuser que vous avez créé. Vous pouvez faire celà en vous connectant sur http://127.0.0.1:8000/admin et en éditant l'instance admin dans la table Utilisateur
 
 ## Aperçus de l'application
 
