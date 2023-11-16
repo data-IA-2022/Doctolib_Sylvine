@@ -86,16 +86,7 @@ def comptes(request):
                    "message" : message,
                    "username": username,
                    "role":role,})
-
-# @login_required
-# page avec eda et ia pour uniquement le médecin
-# def edaia(request):
-#     username = request.user.username
-#     if request.user.role != "medecin":
-#         return redirect("accueil", {"username": username,})
-#     else:
-#         return render(request, "edaia.html", {"username": username,})
-    
+   
 @login_required
 def edaia(request):
     med_data = medData.objects.all()
