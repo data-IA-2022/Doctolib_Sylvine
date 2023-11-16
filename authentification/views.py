@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import redirect
 from authentification.models import Utilisateur
-from django.contrib.auth.hashers import make_passwords
 
 import random 
 import string
@@ -48,7 +47,7 @@ def inscription(request):
     return render(request,
                     "inscription.html", {"ideeMDP" : ideeMDP.replace(" ", "")}) # ici, c'est s'il n'y a pas de requete post, ie on vient d'arriver sur la page pour la première fois
 
-
+from django.contrib.auth.hashers import make_password
 
 # importer utilisateurs depuis csv
 def alimentationPatients():
