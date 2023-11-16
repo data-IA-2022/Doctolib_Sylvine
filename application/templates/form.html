@@ -2,7 +2,8 @@
 
 {% block content %}
 <title>Formulaire remplissage</title>
-<h1> Bienvenue dans le formulaire santé {{username}} !</h1>
+<h1> Remplissez le formulaire de santé</h1>
+<br>
 <h2>{{ message }}</h2>
 <form id="formContainer" action="{% url 'create_med_data' %}" method="post">
     {% csrf_token %}
@@ -35,7 +36,7 @@
                         ]
 
         // liste du nb d'items de chaque section
-        let division = [4, 6, 6, 6, 3, 12, 43];
+        let division = [4, 6, 6, 6, 3, 13, 42];
         console.log('division = ' + division)
 
         // on crée un array pour lister les index de début de chaque section 

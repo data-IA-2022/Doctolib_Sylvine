@@ -17,6 +17,10 @@ def accueil(request):
     return render(request,"accueil.html",
                   context={"username": username})
 
+def test(request):
+    return render(request,"test.html")
+
+
 @login_required
 def tableVisualisation(request): # version Patrick
     if request.user.role not in ["responsable","patient","medecin"]:
@@ -57,6 +61,7 @@ def comptes(request):
     regexMDP = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+-]).{8,}$"
     message = ""
     username = request.user.username
+    role = request.user.role
     if request.method == "POST":
         ancienMDP = request.POST["ancienMDP"]
         nouveauMDP1 = request.POST["nouveauMDP1"]
@@ -79,7 +84,8 @@ def comptes(request):
                   "comptes.html",
                   {"regexMDP" : regexMDP, 
                    "message" : message,
-                   "username": username,})
+                   "username": username,
+                   "role":role,})
 
 # @login_required
 # page avec eda et ia pour uniquement le médecin

@@ -1,10 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<title>Comptes</title>
+<title>Compte</title>
 
-<h1>Mise à jour du mot de passe</h1>
+<h1>Votre compte</h1>
 <br>
+<p> Votre nom d'utilisateur : {{username}}</p>
+<p> Votre rôle : {{role}}</p>
+<br>
+<h2>Mettre à jour votre mot de passe :</h2>
 <form method = "post">
     {{ message }}
     {% csrf_token %}

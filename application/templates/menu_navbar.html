@@ -1,36 +1,39 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">
-        <img src="{% static 'images/BeePatient_w_trans.png' %}" alt="logo" height="80">
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-link" href="{% url 'accueil' %}">Accueil</a>
-          <a class="nav-link" href="{% url 'tableVisualisation' %}" >Historique des données</a>
-          {% if user.role == "patient" %}
-            <a class="nav-link" href="{% url 'create_med_data' %}">Formulaire de santé</a>
-          {% endif %}
-          {% if user.role == "medecin" %}
-             <a class="nav-link" href="{% url 'edaia' %}">Exploration des données</a>
-          {% endif %}
-          {% if user.role == "responsable" %}
-            <a class="nav-link" href="{% url 'associationMedecinPatient' %}">Associer un médecin à un patient</a>
-          {% endif %} 
+<nav class="navbar navbar-expand-lg sticky-top bg-body-tertiary ">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="{% static 'images/BeePatient_w_trans.png' %}" alt="logo" height="80">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <!-- <a class="nav-link" href="{% url 'test' %}">test</a> -->
+        <a class="nav-link" href="{% url 'accueil' %}">Accueil</a>
+        <a class="nav-link" href="{% url 'tableVisualisation' %}">Historique des données</a>
+        {% if user.role == "patient" %}
+        <a class="nav-link" href="{% url 'create_med_data' %}">Formulaire de santé</a>
+        {% endif %}
+        {% if user.role == "medecin" %}
+        <a class="nav-link" href="{% url 'edaia' %}">Exploration des données</a>
+        {% endif %}
+        {% if user.role == "responsable" %}
+        <a class="nav-link" href="{% url 'associationMedecinPatient' %}">Associer un médecin à un patient</a>
+        {% endif %}
 
 
-        </div>
+      </div>
 
-        <div class=" navbar-nav d-flex ms-auto">        
-            <a class="nav-link" href="{% url 'comptes' %}">Mettre à jour votre compte</a>
-            <a class="nav-link" href="{% url 'deconnexion' %}">Déconnexion</a>
-            <span class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2">
-                Utilisateur : {{username}}
-            </span>  
-        </div> 
+      <div class=" navbar-nav d-flex ms-auto">
+        <span class="navbar-text">Utilisateur : {{username}}</span>
+        <a class="nav-link" href="{% url 'comptes' %}"><span class="badge text-bg-warning">Compte</span></a>
+        <a class="nav-link" href="{% url 'deconnexion' %}"><span class="badge text-bg-warning">Déconnexion</span></a>
+
       </div>
     </div>
-  </nav>
+  </div>
+</nav>
+
+
