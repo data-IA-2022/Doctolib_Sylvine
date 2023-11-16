@@ -38,6 +38,8 @@ La table **medData** contient les données médicales de chaque patient, avec no
 
 Pour l'instant, cette table contient des données fictives chargées dans la base à l'aide d'une fonction dans le views.py
 
+D'autres tables sont également présentes et ajoutées par Django
+
 ## Installation
 ### Requirements
 Cette version a pour le moment uniquement été testée dans un environnement Linux, dans une version 3.9.13 de Python.
