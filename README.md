@@ -7,4 +7,4 @@ Ce projet a pour but de créer une application basée sur le framework Django po
 
 
 
-![](https://github.com/data-IA-2022/Doctolib_Sylvine/blob/images/schema_bdd.png)
+![](https://github.com/data-IA-2022/Doctolib_Sylvine/blob/main/images/schema_bdd.png)
