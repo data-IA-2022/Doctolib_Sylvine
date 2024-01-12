@@ -22,7 +22,7 @@ from authentification.views import connexion, deconnexion, inscription
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accueil/",accueil, name = "accueil"), # le name est un alias pour retrouevr toutes les url via un chemin absolu
-    path("",connexion, name ="connexion"),
+    path("login/",connexion, name ="connexion"),
     path("comptes", comptes, name="comptes"),
     path("deconnexion/",deconnexion, name="deconnexion"),
     path("inscription/",inscription, name="inscription"),

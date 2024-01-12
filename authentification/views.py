@@ -17,9 +17,6 @@ def connexion(request):
         motDePasse = request.POST["motDePasse"]
         verification = authenticate(username = username,
                                     password = motDePasse)
-        print(username)
-        print(motDePasse)
-        print(verification)
         if verification != None:
             login(request, verification)
             return redirect("accueil")

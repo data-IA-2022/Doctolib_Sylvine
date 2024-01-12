@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "authentification",
     "application",
     "django_tables2",
+
 ]
 
 MIDDLEWARE = [

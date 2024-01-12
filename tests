@@ -1,7 +1,0 @@
-from application.models import medData  # Importez votre modèle
-
-# Obtenez tous les noms de champs du modèle
-noms_des_champs = [field.name for field in medData._meta.fields]
-
-# Imprimez la liste des noms de champs
-print(noms_des_champs)

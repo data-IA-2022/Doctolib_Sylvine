@@ -163,3 +163,5 @@ authentification/migrations/
 transfert.py
 tests.py
 static_root
+mlruns
+mlartifacts
