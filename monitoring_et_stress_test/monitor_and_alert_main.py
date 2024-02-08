@@ -3,7 +3,6 @@
 Script de monitoring d'un site / application web.
 Paramétrage des métriques à monitirer, des seuils et envoi d'alerte mail et discord
 Variables d'environnement crées dans .env
-
 '''
 
 import mlflow
@@ -16,6 +15,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 import schedule
+from datetime import datetime
+import json
 
 # chargement des variables d'environnement depuis le fichier dotenv
 load_dotenv()
@@ -75,50 +76,49 @@ def send_alert_email(subject, body):
 
 
 # Fonction de monitoring d'une source
-def monitor_website(url):
-    # rajouter authentification ici
-
+def monitor_website(url):    
+    # authentification sur le site
+    # récupération du token via les cookies après un get sur la page login
     session = requests.Session()
     # print(session)
     response = session.get("http://127.0.0.1:8000/login/")
     csrf_token = response.cookies["csrftoken"]
-    # print(response)
 
+    #authentification sur la page login en utilisant le token
     data = {
         "username": "M01",
         "motDePasse": "M01", 
         'csrfmiddlewaretoken' : csrf_token
     }
-
+    
     response = session.post("http://127.0.0.1:8000/login/", data=data)
-    # print(response.url)
+    '''
+    print("-----")
+    Récupérer le CSRF token de la route login
+    response = requests.get("http://127.0.0.1:8000/login/")
+    csrf_token = response.cookies.get("csrftoken")
+    print(csrf_token)
 
+    # Envoyer une requête POST avec les données de connexion
+    data = {
+        "username": "M01",
+        "motDePasse": "M01"
+    }
+    response = requests.post("http://127.0.0.1:8000/login/", data=data, headers={"X-CSRFToken": csrf_token})
+    '''
 
-
-
-
-    # print("-----")
-    # Récupérer le CSRF token de la route login
-    # response = requests.get("http://127.0.0.1:8000/login/")
-    # csrf_token = response.cookies.get("csrftoken")
-    # print(csrf_token)
-
-    # # Envoyer une requête POST avec les données de connexion
-    # data = {
-    #     "username": "M01",
-    #     "motDePasse": "M01"
-    # }
-    # response = requests.post("http://127.0.0.1:8000/login/", data=data, headers={"X-CSRFToken": csrf_token})
-
+    # debut du monitoring
     start_time = time.time()
     
     # Test envoi alerte
     # send_alert_discord("MLOps", "Monitoring en cours ... ")
     # send_alert_email("MLOps", "Monitoring en cours ... ")
 
+    # envoyer vers l'url à monitorer
     try:
         REDIRECT_URL = url
         response = session.get(REDIRECT_URL)
+        print(response.url)
   
         # print(url)
         # print(response.url)
@@ -137,9 +137,16 @@ def monitor_website(url):
         
         # Mesurer le taux d'erreur
         if response.status_code != 200:
-            mlflow.log_metric("error_rate", 1)
+            error_rate = 1
         else:
-            mlflow.log_metric("error_rate", 0)
+            error_rate = 0
+        
+        mlflow.log_metric("error_rate", error_rate) 
+
+        # if response.status_code != 200:
+        #     mlflow.log_metric("error_rate", 1)
+        # else:
+        #     mlflow.log_metric("error_rate", 0)
         
         # Mesurer la disponibilité
         mlflow.log_metric("availability", 1)
@@ -161,18 +168,61 @@ def monitor_website(url):
         if cpu_utilization > THRESHOLD_CPU_UTILIZATION:
             send_alert_discord(":warning: Alerte - utilisation CPU élevée", f"L'utilisation du CPU est élevée : {cpu_utilization} ")
             # send_alert_email("Alerte - Temps de réponse élevé", f"Le temps de réponse est élevé : {response_time} secondes")
+
+        #creation d'un fichier log:
+        current_datetime = datetime.now()
+        current_datetime_string = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+
+        log_dict = {current_datetime_string : {} }
         
+        log_dict[current_datetime_string]["response_time"] = response_time
+        log_dict[current_datetime_string]["error_rate"] = error_rate
+        log_dict[current_datetime_string]["availability"] = 1
+        log_dict[current_datetime_string]["bandwidth"] = bandwidth
+        log_dict[current_datetime_string]["cpu_utilization"] = cpu_utilization
+        log_dict[current_datetime_string]["memory_utilization"] = memory_utilization
+        log_dict[current_datetime_string]["storage_utilization"] = storage_utilization
+
+        # with open("log_file.json", 'a') as file:
+        #     # Write the new dictionary to the file
+        #     json.dump(log_dict, file)
+        #     file.write('\n')  # Add a newline character to separate the JSON objects
+
+        with open("log_file.json", 'r+') as file:
+            # Load the existing JSON data
+            existing_data = json.load(file)
+            
+            # Add the new log data to the existing data
+            existing_data.update(log_dict)
+            
+            # Set the file pointer to the beginning of the file
+            file.seek(0)
+            
+            # Write the updated data back to the file
+            json.dump(existing_data, file, indent=4)
+            file.truncate()  # (Optional) Truncate the file to remove any remaining data after the updated JSON
+
+            
+
+                    
     # Alerte si connexion impossible
     except Exception as e:
         send_alert_discord(":warning: Alerte - Erreur de requête HTTP", f"Erreur lors de la requête HTTP : {e}")
         # send_alert_email("Alerte - Erreur de requête HTTP", f"Erreur lors de la requête HTTP : {e}")
         print(f"Erreur lors de la requête HTTP : {e}")
 
+
+    
+    
+
 def monitor_mlflow():
     print("Monitoring django app ...")
     mlflow.start_run()
     monitor_website(url = "http://127.0.0.1:8000/tableVisualisation/")
+    # monitor_website(url = "http://127.0.0.1:8000/accueil/")
     mlflow.end_run()
+
+    
 
 
 schedule.every(10).seconds.do(monitor_mlflow)
@@ -180,6 +230,4 @@ schedule.every(10).seconds.do(monitor_mlflow)
 while True:
     schedule.run_pending()
     time.sleep(1)
-
-
 

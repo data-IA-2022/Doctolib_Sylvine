@@ -161,6 +161,12 @@ def monitor_website(url):
         if cpu_utilization > THRESHOLD_CPU_UTILIZATION:
             send_alert_discord(":warning: Alerte - utilisation CPU élevée", f"L'utilisation du CPU est élevée : {cpu_utilization} ")
             # send_alert_email("Alerte - Temps de réponse élevé", f"Le temps de réponse est élevé : {response_time} secondes")
+
+            # Obtenir le nombre de requêtes par seconde
+        requests_per_second = response.stats_get("requests_per_second")
+
+        # Log des métriques avec MLflow
+        mlflow.log_metric("request_rate", requests_per_second)
         
     # Alerte si connexion impossible
     except Exception as e:

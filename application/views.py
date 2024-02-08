@@ -8,6 +8,7 @@ import csv
 import numpy as np
 from application.forms import MedDataForm
 import datetime
+import mlflow
 
 
 @login_required
@@ -35,6 +36,7 @@ def tableVisualisation(request): # version Patrick
         idMedData = [valeur.id for valeur in medData.objects.all()]
         # pour chaque id récupéré, on extrait de la table les valeurs dans le premier (et unique ici) élément du dictionnaire correpsondant à l'id
         dataMedData = [medData.objects.filter(id=id).values()[0].values() for id in idMedData]
+        dataMedData = [medData.objects.filter(id=valeur.id).values()[0].values() for valeur in medData.objects.all()]
 
     elif request.user.role == "patient":
         #collect all lines for this user
@@ -285,3 +287,22 @@ def alimentationMedData():
 if medData.objects.count() == 0:
     alimentationMedData()
 
+# # page ia
+# def ia(request):
+#     username = request.user.username
+#     role = request.user.role
+
+#     if request.method == "POST":
+#         nouveaupoids = request.POST["nouveaupoids"]
+
+#     loaded_model = mlflow.pyfunc.load_model(model_info.model_uri)    
+
+        
+
+
+    # return render(request,
+    #               "comptes.html",
+    #               {"regexMDP" : regexMDP, 
+    #                "message" : message,
+    #                "username": username,
+    #                "role":role,})

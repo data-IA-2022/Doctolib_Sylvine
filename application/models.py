@@ -100,6 +100,4 @@ class medData(models.Model):
     diffRemettreEvent = models.IntegerField(default =0, choices=stressChoices)
     mainsMoites = models.IntegerField(default =0, choices=stressChoices)
     #totalStress = models.Sum() #???
-
-
-
+    

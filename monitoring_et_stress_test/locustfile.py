@@ -18,9 +18,10 @@ class MyUser(HttpUser):
         self.client.post('/login/',
                          {'username': 'M01', 'motDePasse': 'M01'},
                          headers={'X-CSRFToken': csrftoken})
-
+        
     @task()
     def my_task(self):
+        # self.client.get("/accueil")
         self.client.get("/tableVisualisation")
 
 

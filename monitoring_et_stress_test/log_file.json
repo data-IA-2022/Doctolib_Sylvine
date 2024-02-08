@@ -1,0 +1,29 @@
+{
+    "2024-02-08 13:58:15": {
+        "response_time": 0.06742715835571289,
+        "error_rate": 0,
+        "availability": 1,
+        "bandwidth": 1232.724953148757,
+        "cpu_utilization": 15.8,
+        "memory_utilization": 52.6,
+        "storage_utilization": 80.2
+    },
+    "2024-02-08 13:58:26": {
+        "response_time": 0.07055902481079102,
+        "error_rate": 0,
+        "availability": 1,
+        "bandwidth": 1178.0086367107513,
+        "cpu_utilization": 16.4,
+        "memory_utilization": 52.5,
+        "storage_utilization": 80.2
+    },
+    "2024-02-08 13:58:37": {
+        "response_time": 0.06645083427429199,
+        "error_rate": 0,
+        "availability": 1,
+        "bandwidth": 1250.8366754570081,
+        "cpu_utilization": 14.1,
+        "memory_utilization": 52.5,
+        "storage_utilization": 80.2
+    }
+}
