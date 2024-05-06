@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from application.views import accueil, comptes, edaia, associationMedecinPatient, create_med_data, tableVisualisation, rgpd, forbidden, test
 from authentification.views import connexion, deconnexion, inscription
 
@@ -33,5 +33,6 @@ urlpatterns = [
     path("rgpd/",rgpd, name="rgpd"),
     path("forbidden/",forbidden, name="forbidden"),
     path("test/",test, name="test"),
+    path('', include('django_prometheus.urls')),
 
 ]

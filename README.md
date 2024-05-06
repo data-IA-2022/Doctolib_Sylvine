@@ -1,7 +1,7 @@
 # Projet application de médecine participative (Bee Patient)
 ![](https://github.com/data-IA-2022/Doctolib_Sylvine/blob/main/application/static/images/BeePatient.png)
 
-Projet monté dans le cadre de la formation dev IA portée par Simplon et le Greta Val de Loire.
+Projet monté dans le cadre de la formation dev IA portée par Simplon et le Greta Val de Loire. Ce projet est également utilisé dans le cadre du livrable E5 : correctif d'un bug.
 
 Ce projet a pour but de créer une application basée sur le framework Django pour construire une application de médecine participative, où des médecins gèrent un ensemble de patients qui doivent se connecter à intervalles définis afin de remplir des formulaires concernant divers aspects de santé. 
 
@@ -107,3 +107,5 @@ La version présentée ici est une v1 avec peu de fonctionnalités. Les version 
 * Effectuer des tests unitaires afind e vérifier que l'application est fonctionnelle
 
 
+# Incorporation d'une correction de bug dans le cadre du livrable E5 
+Afin de répondre aux exigences du référentiel, ce projet a été le support d'un monitoring et d'une résolution de problème technique. Les modifications liées à cet aspect sont présentées dans le dossier `monitoring_et_stress_test`. 

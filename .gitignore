@@ -165,3 +165,4 @@ tests.py
 static_root
 mlruns
 mlartifacts
+Prometheus

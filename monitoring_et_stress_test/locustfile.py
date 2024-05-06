@@ -1,4 +1,4 @@
-from locust import HttpUser, task
+from locust import HttpUser, task, constant, between
 import locust
 
 ''' 
@@ -7,6 +7,7 @@ locust -f locustfile.py --host http://localhost:8000 --users 1000 --spawn-rate 1
 '''
 
 class MyUser(HttpUser):
+    wait_time = constant(1)
     # connexion de l'utilisateur
     def on_start(self):
         self.login()

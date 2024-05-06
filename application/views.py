@@ -9,6 +9,8 @@ import numpy as np
 from application.forms import MedDataForm
 import datetime
 import mlflow
+from django.core.cache import cache
+import json
 
 
 @login_required
@@ -31,26 +33,57 @@ def tableVisualisation(request): # version Patrick
     # On récupère le nom des champs de la table medData
     champsMedData = [field.name for field in medData._meta.get_fields()]
 
-    if request.user.role == "responsable":
-        # on récupère une liste de tous les id contenus dans la table medData
-        idMedData = [valeur.id for valeur in medData.objects.all()]
-        # pour chaque id récupéré, on extrait de la table les valeurs dans le premier (et unique ici) élément du dictionnaire correpsondant à l'id
-        dataMedData = [medData.objects.filter(id=id).values()[0].values() for id in idMedData]
-        dataMedData = [medData.objects.filter(id=valeur.id).values()[0].values() for valeur in medData.objects.all()]
+    # # Version non optimisée
+    # if request.user.role == "responsable":
+    #     # on récupère une liste de tous les id contenus dans la table medData
+    #     idMedData = [valeur.id for valeur in medData.objects.all()]
+    #     # pour chaque id récupéré, on extrait de la table les valeurs dans le premier (et unique ici) élément du dictionnaire correpsondant à l'id
+    #     dataMedData = [medData.objects.filter(id=id).values()[0].values() for id in idMedData]
+    #     dataMedData = [medData.objects.filter(id=valeur.id).values()[0].values() for valeur in medData.objects.all()]
 
-    elif request.user.role == "patient":
-        #collect all lines for this user
-        dataMedData_user = medData.objects.filter(anonymousID=username).values() # this returns a list of dictionnaries, one dic for each line of medData for this user
-        # for each dictionnary (i in range length of the dictionnary), get the values
-        dataMedData = [dataMedData_user.values()[i].values() for i in range(dataMedData_user.count())]
-    
-    elif request.user.role == "medecin":
-        # Query the medecinPatient model to get all idPatient instances corresponding to the idMedecin
-        idPatients_list = medecinPatient.objects.filter(idMedecin__username=username).values_list('idPatient', flat=True)
-        # filter the medData table on all idPatient retrieved in the list
-        dataMedData_user = medData.objects.filter(anonymousID__in=idPatients_list).values()
-        # for each dictionnary (i in range length of the dictionnary), get the values
-        dataMedData = [dataMedData_user.values()[i].values() for i in range(dataMedData_user.count())]
+    # elif request.user.role == "patient":
+    #     #collect all lines for this user
+    #     dataMedData_user = medData.objects.filter(anonymousID=username).values() # this returns a list of dictionnaries, one dic for each line of medData for this user
+    #     # for each dictionnary (i in range length of the dictionnary), get the values
+    #     dataMedData = [list(dataMedData_user.values()[i].values()) for i in range(dataMedData_user.count())]
+
+    # elif request.user.role == "medecin":
+    #     # Ce code ne met pas les données en cache
+    #     # Query the medecinPatient model to get all idPatient instances corresponding to the idMedecin
+    #     idPatients_list = medecinPatient.objects.filter(idMedecin__username=username).values_list('idPatient', flat=True)
+    #     # filter the medData table on all idPatient retrieved in the list
+    #     dataMedData_user = medData.objects.filter(anonymousID__in=idPatients_list).values()
+    #     # for each dictionnary (i in range length of the dictionnary), get the values
+    #     dataMedData = [dataMedData_user.values()[i].values() for i in range(dataMedData_user.count())]
+
+
+    # Version optimisée avec stockage dans le cache
+    # Récupérer les données déjà présentes dans le cache
+    cachename = f'cached_TabVis_{username}'
+    dataMedData = cache.get(cachename)
+
+    # si aucune donnée n'est présente dans le cache pour cet utilisateur, récupérer les données et les mettre en cache
+    if not dataMedData:
+        if request.user.role == "responsable":
+            # Si les données ne sont pas en cache, effectuez la requête coûteuse
+            idMedData = [valeur.id for valeur in medData.objects.all()]
+            dataMedData = [medData.objects.filter(id=id).values()[0].values() for id in idMedData]
+            dataMedData = [list(medData.objects.filter(id=valeur.id).values()[0].values()) for valeur in medData.objects.all()]
+
+        elif request.user.role == "patient":
+            #collect all lines for this user
+            dataMedData_user = medData.objects.filter(anonymousID=username).values() # this returns a list of dictionnaries, one dic for each line of medData for this user
+            # for each dictionnary (i in range length of the dictionnary), get the values
+            dataMedData = [list(dataMedData_user.values()[i].values()) for i in range(dataMedData_user.count())]
+
+        elif request.user.role == "medecin":
+            # si les données ne sont pas en cache, récupérer les données
+            idPatients_list = medecinPatient.objects.filter(idMedecin__username=username).values_list('idPatient', flat=True)
+            dataMedData_user = medData.objects.filter(anonymousID__in=idPatients_list).values()
+            dataMedData = [list(dataMedData_user.values()[i].values()) for i in range(dataMedData_user.count())]
+
+        # Mettre en cache les données pour une durée spécifiée (par exemple, 300 secondes)
+        cache.set(cachename, dataMedData, 300)
 
     return render(request, "tableVisualisation.html",
             {"dataMedData" : dataMedData,
